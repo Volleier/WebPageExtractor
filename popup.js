@@ -53,13 +53,11 @@ function displayProducts(products, resultsDiv, showImagesCtrl) {
 
     const name = product.name || '未知产品';
     const price = product.price || '价格不可用';
-    const description = product.description || '无描述';
     const seller = product.seller || '未知卖家';
 
     productCard.innerHTML = `
       <h3>${name}</h3>
       <div class="price">${price}</div>
-      <div class="description">${description}</div>
       ${imgHTML}
       <div class="seller">卖家: ${seller}</div>
       <div class="product-index">产品 #${index + 1}</div>
@@ -104,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
           statusDiv.innerHTML = '<p>已检测到TikTok商品页，请点击提取按钮</p>';
           initTiktokHandlers({statusDiv, productResults, autoExtract, showImages});
         } else {
-          statusDiv.innerHTML = '<p>请打开TikTok商品详情页使用该插件</p>';
+          statusDiv.innerHTML = '<p>请打开TikTok商品详情页使用该插件或刷新游览器</p>';
         }
       });
     } else if (siteType === 'shopee') {
@@ -114,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
           statusDiv.innerHTML = '<p>已检测到Shopee商品页，请点击提取按钮</p>';
           initShopeeHandlers({statusDiv, shopeeProductResults});
         } else {
-          statusDiv.innerHTML = '<p>请打开Shopee商品详情页使用该插件</p>';
+          statusDiv.innerHTML = '<p>请打开Shopee商品详情页使用该插件或刷新游览器</p>';
         }
       });
     } else {

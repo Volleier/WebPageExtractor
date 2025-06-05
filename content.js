@@ -32,26 +32,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     sendResponse({isProductPage});
   } 
   else if (request.action === "scrapeProducts") {
-    // TikTok 商品页面提取
-    const price = document.querySelector('.price-w1xvrw span')?.innerText || '';
-    const name = document.querySelector('.title-v0v6fK')?.innerText || '';
-    const seller = document.querySelector('.seller-c27aRQ')?.innerText || '';
-    const rating = document.querySelector('.infoRatingScore-jSs6kd')?.innerText || '';
-    const ratingCount = document.querySelector('.infoRatingCount-lKBiTI')?.innerText || '';
-    const sold = document.querySelector('.info__sold-ZdTfzQ')?.innerText || '';
-    const image = document.querySelector('img')?.src || ''; // 你可以根据实际页面结构优化
-
-    const products = [{
-      name,
-      price,
-      seller,
-      rating,
-      ratingCount,
-      sold,
-      image
-    }];
-
-    sendResponse({success: true, products});
+    // 使用更完善的提取函数
+    const product = extractTikTokSingleProductInfo();
+    if (product) {
+        sendResponse({success: true, products: [product]});
+    } else {
+        sendResponse({success: false, products: []});
+    }
     return true;
   } else if (request.action === "scrapeShopeeProducts") {
     try {
@@ -80,8 +67,7 @@ function analyzeTikTokPageForProducts() {
   const results = {
     possibleTitles: [],
     possiblePrices: [],
-    possibleImages: [],
-    possibleDescriptions: []
+    possibleImages: []
   };
   
   // 查找可能的商品标题
@@ -250,13 +236,7 @@ function extractTikTokProductInfo() {
       if (priceElement) {
         price = priceElement.textContent.trim();
       }
-      
-      // 提取描述
-      let description = '';
-      const descriptionElement = element.querySelector('.description, [data-e2e="product-description"]');
-      if (descriptionElement) {
-        description = descriptionElement.textContent.trim();
-      }
+  
       
       // 提取图片
       let image = '';
@@ -275,7 +255,6 @@ function extractTikTokProductInfo() {
       products.push({
         name: title,
         price,
-        description,
         image,
         seller
       });
@@ -411,7 +390,6 @@ function analyzeTikTokPageForProducts() {
     possibleTitles: [],
     possiblePrices: [],
     possibleImages: [],
-    possibleDescriptions: []
   };
   
   // 查找可能的商品标题
@@ -581,13 +559,6 @@ function extractTikTokProductInfo() {
         price = priceElement.textContent.trim();
       }
       
-      // 提取描述
-      let description = '';
-      const descriptionElement = element.querySelector('.description, [data-e2e="product-description"]');
-      if (descriptionElement) {
-        description = descriptionElement.textContent.trim();
-      }
-      
       // 提取图片
       let image = '';
       const imageElement = element.querySelector('img, [data-e2e="product-image"]');
@@ -605,7 +576,6 @@ function extractTikTokProductInfo() {
       products.push({
         name: title,
         price,
-        description,
         image,
         seller
       });
@@ -715,22 +685,6 @@ function extractTikTokSingleProductInfo() {
       }
     }
     
-    // 查找描述
-    const descSelectors = [
-      '.description', 
-      '.product-description', 
-      '[data-e2e="product-description"]'
-    ];
-    
-    let description = 'No description available';
-    for (let selector of descSelectors) {
-      const el = document.querySelector(selector);
-      if (el && el.textContent.trim()) {
-        description = el.textContent.trim();
-        break;
-      }
-    }
-    
     // 查找图片
     const imgSelectors = [
       '.product-image img', 
@@ -743,14 +697,15 @@ function extractTikTokSingleProductInfo() {
 
     // 只提取 .slick-list > .slick-track 下所有 slick-slide 里的图片（只保留轮播图结构，其他图片一律不提取）
     let images = [];
+    let imageElements = [];
     const slickTrack = document.querySelector('.slick-list .slick-track');
     if (slickTrack) {
       const imgNodes = slickTrack.querySelectorAll('img');
       imgNodes.forEach(img => {
-        // 优先取 src，没有则取 data-src
         let url = img.getAttribute('src') || img.getAttribute('data-src');
         if (url && url.startsWith('http') && !images.includes(url)) {
           images.push(url);
+          imageElements.push({ url, outerHTML: img.outerHTML });
         }
       });
     }
@@ -776,9 +731,9 @@ function extractTikTokSingleProductInfo() {
     return {
       name: title,
       price,
-      description,
       image,
-      images, // 新增images字段，包含所有图片
+      images,
+      imageElements, // 新增
       seller
     };
   } catch (e) {

@@ -60,3 +60,10 @@ export function initTiktokHandlers({statusDiv, productResults, autoExtract, show
       window.exportProductsToCSV(lastExtractedProducts, 'tiktok_products.csv');
     });
   }
+  
+  // 工具函数：转义HTML
+  function escapeHtml(str) {
+    return (str || '').replace(/[<>&"]/g, function(c) {
+      return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];
+    });
+  }
