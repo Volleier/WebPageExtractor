@@ -1,10 +1,15 @@
-import { initTiktokHandlers } from './src/extract_TikTok.js';
-import { initShopeeHandlers } from './src/extract_Shopee.js';
+import { initTiktokHandlers } from './src/page_TikTok.js';
+import { initShopeeHandlers } from './src/page_Shopee.js';
 
-// 通用：导出CSV
-function exportProductsToCSV(products, filename = 'products.csv') {
+/**
+ * 导出产品数据为CSV文件
+ * @param {Array} products 产品数组
+ * @param {string} filename 导出文件名
+ * @param {HTMLElement} statusDiv 状态显示区域
+ */
+function exportProductsToCSV(products, filename = 'products.csv', statusDiv) {
   if (!products || products.length === 0) {
-    statusDiv.innerHTML = '<p class="error">暂无可导出的产品数据，请先提取产品信息。</p>';
+    if (statusDiv) statusDiv.innerHTML = '<p class="error">暂无可导出的产品数据，请先提取产品信息。</p>';
     return;
   }
   const csv = productsToCSV(products);
@@ -20,10 +25,14 @@ function exportProductsToCSV(products, filename = 'products.csv') {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 
-  statusDiv.innerHTML = '<p class="success">CSV文件已导出！</p>';
+  if (statusDiv) statusDiv.innerHTML = '<p class="success">CSV文件已导出！</p>';
 }
 
-// 通用：对象数组转CSV
+/**
+ * 将产品对象数组转换为CSV字符串
+ * @param {Array} products 产品数组
+ * @returns {string} CSV内容
+ */
 function productsToCSV(products) {
   const allKeys = new Set();
   products.forEach(p => Object.keys(p).forEach(k => allKeys.add(k)));
@@ -32,22 +41,25 @@ function productsToCSV(products) {
   return [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
 }
 
-// 通用：显示产品
+/**
+ * 显示产品信息到页面
+ * @param {Array} products 产品数组
+ * @param {HTMLElement} resultsDiv 显示区域
+ * @param {HTMLElement} showImagesCtrl 控制图片显示的checkbox
+ */
 function displayProducts(products, resultsDiv, showImagesCtrl) {
   if (!products || products.length === 0) {
     resultsDiv.innerHTML = '<p class="no-results">未找到产品信息</p>';
-    statusDiv.innerHTML = '<p class="error">未找到产品信息</p>';
+    if (window.statusDiv) window.statusDiv.innerHTML = '<p class="error">未找到产品信息</p>';
     return;
   }
-
   resultsDiv.innerHTML = '';
-
   products.forEach((product, index) => {
     const productCard = document.createElement('div');
     productCard.className = 'product-card';
 
     let imgHTML = '';
-    if (showImagesCtrl.checked && product.image) {
+    if (showImagesCtrl && showImagesCtrl.checked && product.image) {
       imgHTML = `<img src="${product.image}" alt="${product.name || '产品图片'}">`;
     }
 
@@ -62,7 +74,6 @@ function displayProducts(products, resultsDiv, showImagesCtrl) {
       <div class="seller">卖家: ${seller}</div>
       <div class="product-index">产品 #${index + 1}</div>
     `;
-
     resultsDiv.appendChild(productCard);
   });
 }
@@ -72,7 +83,9 @@ window.displayProducts = displayProducts;
 window.exportProductsToCSV = exportProductsToCSV;
 
 document.addEventListener('DOMContentLoaded', function() {
+  // 统一获取所有DOM元素
   const statusDiv = document.getElementById('status');
+  window.statusDiv = statusDiv; // 供通用函数内部使用
   const tiktokContent = document.getElementById('tiktokContent');
   const shopeeContent = document.getElementById('shopeeContent');
   const productResults = document.getElementById('productResults');
@@ -80,6 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const autoExtract = document.getElementById('autoExtract');
   const showImages = document.getElementById('showImages');
 
+  // 检测当前标签页类型并初始化对应内容
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     const tab = tabs[0];
     const url = tab ? tab.url : '';

@@ -1,69 +1,96 @@
-export function initTiktokHandlers({statusDiv, productResults, autoExtract, showImages}) {
-    // 加载保存的设置
-    chrome.storage.sync.get(['autoExtract', 'showImages'], function(data) {
-      autoExtract.checked = data.autoExtract || false;
-      showImages.checked = data.showImages !== undefined ? data.showImages : true;
-    });
-  
-    // 保存设置
-    autoExtract.addEventListener('change', function() {
-      chrome.storage.sync.set({autoExtract: this.checked});
-    });
-    showImages.addEventListener('change', function() {
-      chrome.storage.sync.set({showImages: this.checked});
-    });
-  
-    let lastExtractedProducts = [];
-  
-    // 提取产品信息
-    const scrapeBtn = document.getElementById('scrapeBtn');
-    scrapeBtn.addEventListener('click', function() {
-      statusDiv.innerHTML = '<p><i class="fas fa-spinner fa-spin"></i> 正在提取产品信息...</p>';
-  
-      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        if (!tabs || tabs.length === 0) {
-          statusDiv.innerHTML = '<p class="error">无法访问当前标签页</p>';
-          return;
-        }
-        const currentTab = tabs[0];
-        statusDiv.innerHTML += `<p>当前页面: ${currentTab.url}</p>`;
-  
-        if (currentTab.url.includes('tiktok.com')) {
-          chrome.tabs.sendMessage(currentTab.id, {action: "scrapeProducts"}, function(response) {
-            if (chrome.runtime.lastError) {
-              statusDiv.innerHTML = `
-                <p class="error">错误: ${chrome.runtime.lastError.message}</p>
-                <p>请尝试刷新页面后重试</p>
-              `;
-              return;
-            }
-            if (response && response.success) {
-              statusDiv.innerHTML = `<p class="success">成功提取了 ${response.products.length} 个产品</p>`;
-              lastExtractedProducts = response.products;
-              window.displayProducts(response.products, productResults, showImages);
-            } else {
-              statusDiv.innerHTML = `
-                <p class="error">未能提取产品信息。请确保您在TikTok产品页面上</p>
-              `;
-              lastExtractedProducts = [];
-            }
-          });
-        } else {
-          statusDiv.innerHTML = '<p class="error">请先打开TikTok网站</p>';
+/**
+ * 检查当前页面是否为 TikTok 商品页
+ * @returns {boolean} 是否为商品页
+ */
+export function checkIfTikTokProductPage() {
+  // 常见的商品卡片选择器
+  const shopIndicators = [
+    '.tiktok-shop-card',
+    '[data-e2e="product-card"]',
+    '[data-e2e="tiktok-shop"]',
+    '.product-card',
+    '.product-item'
+  ];
+  for (let selector of shopIndicators) {
+    if (document.querySelector(selector)) return true;
+  }
+  // 通过 URL 简单判断
+  const url = window.location.href;
+  return url.includes('/shop') || url.includes('product');
+}
+
+/**
+ * 提取 TikTok 单个商品页面信息，支持轮播图图片提取
+ * @returns {Object|null} 商品对象或 null
+ */
+export function extractTikTokSingleProductInfo() {
+  try {
+    // 多种标题选择器，兼容不同页面结构
+    const titleSelectors = [
+      'h1', '.product-title', '[data-e2e="product-title"]', '.product-name'
+    ];
+    let title = null;
+    for (let selector of titleSelectors) {
+      const el = document.querySelector(selector);
+      if (el && el.textContent.trim()) {
+        title = el.textContent.trim();
+        break;
+      }
+    }
+    if (!title) return null;
+
+    // 多种价格选择器
+    const priceSelectors = [
+      '.price-w1xvrw span', '.price', '.product-price', '[data-e2e="product-price"]'
+    ];
+    let price = '价格不可用';
+    for (let selector of priceSelectors) {
+      const el = document.querySelector(selector);
+      if (el && el.textContent.trim()) {
+        price = el.textContent.trim();
+        break;
+      }
+    }
+
+    // 提取 slick 轮播图图片
+    let images = [];
+    let imageElements = [];
+    const slickTrack = document.querySelector('.slick-list .slick-track');
+    if (slickTrack) {
+      const imgNodes = slickTrack.querySelectorAll('img');
+      imgNodes.forEach(img => {
+        let url = img.getAttribute('src') || img.getAttribute('data-src');
+        if (url && url.startsWith('http') && !images.includes(url)) {
+          images.push(url);
+          imageElements.push({ url, outerHTML: img.outerHTML });
         }
       });
-    });
-  
-    // 导出按钮逻辑
-    const exportBtn = document.getElementById('exportBtn');
-    exportBtn.addEventListener('click', function() {
-      window.exportProductsToCSV(lastExtractedProducts, 'tiktok_products.csv');
-    });
+    }
+    let image = images.length > 0 ? images[0] : null;
+
+    // 卖家信息选择器
+    const sellerSelectors = [
+      '.seller-c27aRQ', '.seller-name', '.shop-name', '[data-e2e="seller-name"]'
+    ];
+    let seller = '未知卖家';
+    for (let selector of sellerSelectors) {
+      const el = document.querySelector(selector);
+      if (el && el.textContent.trim()) {
+        seller = el.textContent.trim();
+        break;
+      }
+    }
+
+    return {
+      name: title,
+      price,
+      image,
+      images,
+      imageElements,
+      seller
+    };
+  } catch (e) {
+    console.error("Error extracting single product info:", e);
+    return null;
   }
-  
-  // 工具函数：转义HTML
-  function escapeHtml(str) {
-    return (str || '').replace(/[<>&"]/g, function(c) {
-      return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];
-    });
-  }
+}

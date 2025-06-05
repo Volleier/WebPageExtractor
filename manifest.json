@@ -48,7 +48,7 @@
         "*://*.shopee.my/*",
         "*://*.shopee.tw/*"
       ],
-      "js": ["content.js"],
+      "js": ["extract.js"],
       "run_at": "document_idle"
     }
   ]
