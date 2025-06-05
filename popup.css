@@ -1,175 +1,176 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    width: 400px;
-    background: linear-gradient(135deg, #1c1c1c, #2a2a2a);
-    color: #ffffff;
-    min-height: 500px;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  width: 400px;
+  background: linear-gradient(135deg, #1c1c1c, #2a2a2a);
+  color: #ffffff;
+  min-height: 500px;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .header {
-    background: #ff0050;
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: #ff0050;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .header img {
-    width: 40px;
-    height: 40px;
+  width: 40px;
+  height: 40px;
 }
 
 .header h1 {
-    font-size: 18px;
-    font-weight: 600;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .container {
-    padding: 20px;
+  padding: 20px;
 }
 
 .status {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 20px;
-    text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .status p {
-    font-size: 14px;
+  font-size: 14px;
 }
 
 .btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 20px;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+  gap: 10px;
 }
 
 .btn i {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 .primary {
-    background: #ff0050;
-    color: white;
+  background: #ff0050;
+  color: white;
 }
 
 .primary:hover {
-    background: #ff1a66;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 0, 80, 0.4);
+  background: #ff1a66;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 0, 80, 0.4);
 }
 
 .settings {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
 }
 
 .settings h2 {
-    font-size: 16px;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .settings label {
-    display: block;
-    margin-bottom: 12px;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  display: block;
+  margin-bottom: 12px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .results {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 15px;
 }
 
 .results h2 {
-    font-size: 16px;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-#productResults, #shopeeProductResults {
-    max-height: 300px;
-    overflow-y: auto;
+#productResults,
+#shopeeProductResults {
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .product-card {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 15px;
-    transition: all 0.3s ease;
-    border-left: 3px solid #ff0050;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  border-left: 3px solid #ff0050;
 }
 
 .product-card:hover {
-    transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .product-card h3 {
-    font-size: 16px;
-    margin-bottom: 8px;
-    color: #ff6b9c;
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #ff6b9c;
 }
 
 .product-card .price {
-    font-size: 18px;
-    font-weight: bold;
-    color: #4caf50;
-    margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #4caf50;
+  margin-bottom: 8px;
 }
 
 .product-card .description {
-    font-size: 14px;
-    margin-bottom: 10px;
-    opacity: 0.8;
+  font-size: 14px;
+  margin-bottom: 10px;
+  opacity: 0.8;
 }
 
 .product-card img {
-    max-width: 100%;
-    border-radius: 6px;
-    margin: 10px 0;
-    object-fit: cover;
-    height: auto;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  max-width: 100%;
+  border-radius: 6px;
+  margin: 10px 0;
+  object-fit: cover;
+  height: auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .product-index {
-    font-size: 11px;
-    text-align: right;
-    color: #666;
-    margin-top: 5px;
+  font-size: 11px;
+  text-align: right;
+  color: #666;
+  margin-top: 5px;
 }
 
 .error {
@@ -212,77 +213,77 @@ body {
 
 /* 调试部分的样式 */
 .debug-section {
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-    padding: 15px;
-    margin-top: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .debug-section h2 {
-    font-size: 16px;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #ff6b9c;
+  font-size: 16px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ff6b9c;
 }
 
 .debug-btn {
-    background: #333;
-    color: white;
-    margin-bottom: 10px;
+  background: #333;
+  color: white;
+  margin-bottom: 10px;
 }
 
 .debug-btn:hover {
-    background: #444;
+  background: #444;
 }
 
 .debug-output {
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 6px;
-    padding: 10px;
-    font-size: 12px;
-    color: #aaa;
-    max-height: 300px;
-    overflow-y: auto;
-    display: none;
-    margin-top: 10px;
-    font-family: monospace;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 12px;
+  color: #aaa;
+  max-height: 300px;
+  overflow-y: auto;
+  display: none;
+  margin-top: 10px;
+  font-family: monospace;
 }
 
 .debug-entry {
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
-    padding: 5px 0;
-    margin-bottom: 5px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+  padding: 5px 0;
+  margin-bottom: 5px;
 }
 
 .debug-timestamp {
-    font-size: 11px;
-    color: #666;
+  font-size: 11px;
+  color: #666;
 }
 
 .debug-message {
-    color: #4caf50;
-    margin: 3px 0;
+  color: #4caf50;
+  margin: 3px 0;
 }
 
 .debug-data {
-    word-break: break-all;
-    white-space: pre-wrap;
-    color: #ff6b9c;
-    font-size: 10px;
-    max-height: 100px;
-    overflow-y: auto;
+  word-break: break-all;
+  white-space: pre-wrap;
+  color: #ff6b9c;
+  font-size: 10px;
+  max-height: 100px;
+  overflow-y: auto;
 }
 
 details {
-    margin: 10px 0;
-    color: #aaa;
+  margin: 10px 0;
+  color: #aaa;
 }
 
 summary {
-    cursor: pointer;
-    color: #ff6b9c;
-    margin-bottom: 5px;
+  cursor: pointer;
+  color: #ff6b9c;
+  margin-bottom: 5px;
 }
