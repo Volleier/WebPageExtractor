@@ -145,7 +145,6 @@ function extractTikTokSingleProductInfo() {
 
     // 提取 slick 轮播图图片
     let images = [];
-    let imageElements = [];
     const slickTrack = document.querySelector(".slick-list .slick-track");
     if (slickTrack) {
       const imgNodes = slickTrack.querySelectorAll("img");
@@ -153,7 +152,6 @@ function extractTikTokSingleProductInfo() {
         let url = img.getAttribute("src") || img.getAttribute("data-src");
         if (url && url.startsWith("http") && !images.includes(url)) {
           images.push(url);
-          imageElements.push({ url, outerHTML: img.outerHTML });
         }
       });
     }
@@ -180,7 +178,6 @@ function extractTikTokSingleProductInfo() {
       price,
       image,
       images,
-      imageElements,
       seller,
     };
   } catch (e) {

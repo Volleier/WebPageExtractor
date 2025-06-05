@@ -90,13 +90,34 @@ window.exportProductsToCSV = exportProductsToCSV;
 document.addEventListener("DOMContentLoaded", function () {
   // 统一获取所有DOM元素
   const statusDiv = document.getElementById("status");
-  window.statusDiv = statusDiv; // 供通用函数内部使用
+  window.statusDiv = statusDiv;
   const tiktokContent = document.getElementById("tiktokContent");
-  const shopeeContent = document.getElementById("shopeeContent");
   const productResults = document.getElementById("productResults");
-  const shopeeProductResults = document.getElementById("shopeeProductResults");
   const autoExtract = document.getElementById("autoExtract");
   const showImages = document.getElementById("showImages");
+  const TikTokScrapeBtn = document.getElementById("TikTokScrapeBtn");
+  const TikTokExportBtn = document.getElementById("TikTokExportBtn");
+  const shopeeContent = document.getElementById("shopeeContent");
+  const shopeeProductResults = document.getElementById("shopeeProductResults");
+  const shopeeAutoExtract = document.getElementById("shopeeAutoExtract");
+  const shopeeShowImages = document.getElementById("shopeeShowImages");
+  const shopeeExportBtn = document.getElementById("shopeeExportBtn");
+
+  // TikTok 导出按钮事件
+  if (TikTokExportBtn) {
+    TikTokExportBtn.addEventListener("click", function () {
+      if (window.tiktokProducts && window.tiktokProducts.length > 0) {
+        exportProductsToCSV(
+          window.tiktokProducts,
+          "tiktok_products.csv",
+          statusDiv
+        );
+      } else {
+        statusDiv.innerHTML =
+          '<p class="error">暂无可导出的产品数据，请先提取产品信息。</p>';
+      }
+    });
+  }
 
   // 检测当前标签页类型并初始化对应内容
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -114,7 +135,6 @@ document.addEventListener("DOMContentLoaded", function () {
     shopeeContent.style.display = "none";
 
     if (siteType === "tiktok") {
-      // 让 content.js 判断是否为商品页
       chrome.tabs.sendMessage(
         tab.id,
         { action: "isProductPage" },
@@ -127,7 +147,12 @@ document.addEventListener("DOMContentLoaded", function () {
               productResults,
               autoExtract,
               showImages,
+              TikTokScrapeBtn,
             });
+            // 自动检测
+            if (autoExtract && autoExtract.checked) {
+              TikTokScrapeBtn.click();
+            }
           } else {
             statusDiv.innerHTML =
               "<p>请打开TikTok商品详情页使用该插件或刷新游览器</p>";
@@ -142,7 +167,17 @@ document.addEventListener("DOMContentLoaded", function () {
           if (response && response.isProductPage) {
             shopeeContent.style.display = "block";
             statusDiv.innerHTML = "<p>已检测到Shopee商品页，请点击提取按钮</p>";
-            initShopeeHandlers({ statusDiv, shopeeProductResults });
+            // 初始化 Shopee 事件
+            initShopeeHandlers({
+              statusDiv,
+              shopeeProductResults,
+              shopeeAutoExtract,
+              shopeeShowImages,
+            });
+            // 自动检测
+            if (shopeeAutoExtract && shopeeAutoExtract.checked) {
+              document.getElementById("shopeeScrapeBtn").click();
+            }
           } else {
             statusDiv.innerHTML =
               "<p>请打开Shopee商品详情页使用该插件或刷新游览器</p>";

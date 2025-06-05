@@ -7,6 +7,7 @@ export function initTiktokHandlers({
   productResults,
   autoExtract,
   showImages,
+  TikTokScrapeBtn,
 }) {
   // 加载保存的设置
   chrome.storage.sync.get(["autoExtract", "showImages"], function (data) {
@@ -22,7 +23,12 @@ export function initTiktokHandlers({
     chrome.storage.sync.set({ showImages: this.checked });
   });
 
-  let lastExtractedProducts = [];
+  let lastTikTokProducts = [];
+  window.tiktokProducts = [];
+
+  function showProducts(products) {
+    window.displayProducts(products, productResults, showImages);
+  }
 
   // 提取产品信息
   const scrapeBtn = document.getElementById("scrapeBtn");
@@ -52,17 +58,16 @@ export function initTiktokHandlers({
             }
             if (response && response.success) {
               statusDiv.innerHTML = `<p class="success">成功提取了 ${response.products.length} 个产品</p>`;
-              lastExtractedProducts = response.products;
-              window.displayProducts(
-                response.products,
-                productResults,
-                showImages
-              );
+              lastTikTokProducts = response.products;
+              window.tiktokProducts = response.products;
+              showProducts(response.products);
             } else {
               statusDiv.innerHTML = `
                 <p class="error">未能提取产品信息。请确保您在TikTok产品页面上</p>
               `;
-              lastExtractedProducts = [];
+              lastTikTokProducts = [];
+              window.tiktokProducts = [];
+              showProducts([]);
             }
           }
         );
@@ -75,8 +80,17 @@ export function initTiktokHandlers({
   // 导出按钮逻辑
   const exportBtn = document.getElementById("exportBtn");
   exportBtn.addEventListener("click", function () {
-    window.exportProductsToCSV(lastExtractedProducts, "tiktok_products.csv");
+    window.exportProductsToCSV(lastTikTokProducts, "tiktok_products.csv");
   });
+
+  // 图片显示切换
+  if (showImages) {
+    showImages.addEventListener("change", function () {
+      if (window.tiktokProducts && window.tiktokProducts.length > 0) {
+        showProducts(window.tiktokProducts);
+      }
+    });
+  }
 }
 
 // 工具函数：转义HTML
