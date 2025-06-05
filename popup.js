@@ -93,8 +93,8 @@ document.addEventListener("DOMContentLoaded", function () {
   window.statusDiv = statusDiv;
   const tiktokContent = document.getElementById("tiktokContent");
   const productResults = document.getElementById("productResults");
-  const autoExtract = document.getElementById("autoExtract");
-  const showImages = document.getElementById("showImages");
+  const TikTokAutoExtract = document.getElementById("TikTokAutoExtract");
+  const TikTokShowImages = document.getElementById("TikTokShowImages");
   const TikTokScrapeBtn = document.getElementById("TikTokScrapeBtn");
   const TikTokExportBtn = document.getElementById("TikTokExportBtn");
   const shopeeContent = document.getElementById("shopeeContent");
@@ -145,12 +145,12 @@ document.addEventListener("DOMContentLoaded", function () {
             initTiktokHandlers({
               statusDiv,
               productResults,
-              autoExtract,
-              showImages,
+              autoExtract: TikTokAutoExtract,
+              showImages: TikTokShowImages,
               TikTokScrapeBtn,
             });
             // 自动检测
-            if (autoExtract && autoExtract.checked) {
+            if (TikTokAutoExtract && TikTokAutoExtract.checked) {
               TikTokScrapeBtn.click();
             }
           } else {

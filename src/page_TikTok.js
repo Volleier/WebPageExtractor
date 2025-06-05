@@ -1,6 +1,6 @@
 /**
  * 初始化 TikTok 提取按钮和设置的事件处理
- * @param {Object} param0 - 包含 statusDiv, productResults, autoExtract, showImages
+ * @param {Object} param0 - 包含 statusDiv, productResults, autoExtract, showImages, TikTokScrapeBtn
  */
 export function initTiktokHandlers({
   statusDiv,
@@ -31,8 +31,7 @@ export function initTiktokHandlers({
   }
 
   // 提取产品信息
-  const scrapeBtn = document.getElementById("scrapeBtn");
-  scrapeBtn.addEventListener("click", function () {
+  TikTokScrapeBtn.addEventListener("click", function () {
     statusDiv.innerHTML =
       '<p><i class="fas fa-spinner fa-spin"></i> 正在提取产品信息...</p>';
 
@@ -78,7 +77,7 @@ export function initTiktokHandlers({
   });
 
   // 导出按钮逻辑
-  const exportBtn = document.getElementById("exportBtn");
+  const exportBtn = document.getElementById("TikTokExportBtn");
   exportBtn.addEventListener("click", function () {
     window.exportProductsToCSV(lastTikTokProducts, "tiktok_products.csv");
   });

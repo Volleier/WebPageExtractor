@@ -25,10 +25,11 @@
         <div class="settings">
           <h2><i class="fas fa-cog"></i> 设置</h2>
           <label>
-            <input type="checkbox" id="autoExtract" /> 自动检测产品页面
+            <input type="checkbox" id="TikTokAutoExtract" />
+            自动检测产品页面
           </label>
           <label>
-            <input type="checkbox" id="showImages" /> 显示产品图片
+            <input type="checkbox" id="TikTokShowImages" /> 显示产品图片
           </label>
         </div>
         <div class="results">
@@ -42,16 +43,23 @@
         <button id="shopeeScrapeBtn" class="btn primary">
           <i class="fas fa-download"></i> 提取Shopee产品信息
         </button>
+        <div
+          style="color: #f60; margin: 0; font-size: 13px; text-align: center"
+        >
+          请滑动界面确保刷新出所有产品
+        </div>
         <button id="shopeeExportBtn" class="btn secondary">
           <i class="fas fa-file-export"></i> 导出为CSV
         </button>
         <div class="settings">
           <h2><i class="fas fa-cog"></i> 设置</h2>
           <label>
-            <input type="checkbox" id="shopeeAutoExtract" /> 自动检测产品页面
+            <input type="checkbox" id="shopeeAutoExtract" checked />
+            自动检测产品页面
           </label>
           <label>
-            <input type="checkbox" id="shopeeShowImages" /> 显示产品图片
+            <input type="checkbox" id="shopeeShowImages" checked />
+            显示产品图片
           </label>
         </div>
         <div class="results">
