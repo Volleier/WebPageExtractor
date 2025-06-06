@@ -93,15 +93,34 @@ document.addEventListener("DOMContentLoaded", function () {
   window.statusDiv = statusDiv;
   const tiktokContent = document.getElementById("tiktokContent");
   const productResults = document.getElementById("productResults");
-  const TikTokAutoExtract = document.getElementById("TikTokAutoExtract");
-  const TikTokShowImages = document.getElementById("TikTokShowImages");
+  const AutoExtract = document.getElementById("AutoExtract");
+  const ShowImages = document.getElementById("ShowImages");
   const TikTokScrapeBtn = document.getElementById("TikTokScrapeBtn");
   const TikTokExportBtn = document.getElementById("TikTokExportBtn");
   const shopeeContent = document.getElementById("shopeeContent");
   const shopeeProductResults = document.getElementById("shopeeProductResults");
-  const shopeeAutoExtract = document.getElementById("shopeeAutoExtract");
-  const shopeeShowImages = document.getElementById("shopeeShowImages");
+  const shopeeScrapeBtn = document.getElementById("shopeeScrapeBtn");
   const shopeeExportBtn = document.getElementById("shopeeExportBtn");
+
+  // 每次打开菜单都刷新设置
+  chrome.storage.sync.get(["autoExtract", "showImages"], function (data) {
+    if (AutoExtract)
+      AutoExtract.checked = data.autoExtract !== undefined ? data.autoExtract : true;
+    if (ShowImages)
+      ShowImages.checked = data.showImages !== undefined ? data.showImages : true;
+  });
+
+  // 保存设置
+  if (AutoExtract) {
+    AutoExtract.addEventListener("change", function () {
+      chrome.storage.sync.set({ autoExtract: this.checked });
+    });
+  }
+  if (ShowImages) {
+    ShowImages.addEventListener("change", function () {
+      chrome.storage.sync.set({ showImages: this.checked });
+    });
+  }
 
   // TikTok 导出按钮事件
   if (TikTokExportBtn) {
@@ -145,12 +164,12 @@ document.addEventListener("DOMContentLoaded", function () {
             initTiktokHandlers({
               statusDiv,
               productResults,
-              autoExtract: TikTokAutoExtract,
-              showImages: TikTokShowImages,
+              autoExtract: AutoExtract,
+              showImages: ShowImages,
               TikTokScrapeBtn,
             });
-            // 自动检测
-            if (TikTokAutoExtract && TikTokAutoExtract.checked) {
+            // 自动检测 TikTok 商品页并自动提取
+            if (AutoExtract && AutoExtract.checked) {
               TikTokScrapeBtn.click();
             }
           } else {
@@ -171,12 +190,13 @@ document.addEventListener("DOMContentLoaded", function () {
             initShopeeHandlers({
               statusDiv,
               shopeeProductResults,
-              shopeeAutoExtract,
-              shopeeShowImages,
+              autoExtract: AutoExtract,
+              showImages: ShowImages,
+              shopeeScrapeBtn,
             });
             // 自动检测
-            if (shopeeAutoExtract && shopeeAutoExtract.checked) {
-              document.getElementById("shopeeScrapeBtn").click();
+            if (AutoExtract && AutoExtract.checked) {
+              shopeeScrapeBtn.click();
             }
           } else {
             statusDiv.innerHTML =

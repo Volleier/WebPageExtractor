@@ -5,15 +5,15 @@
 export function initShopeeHandlers({
   statusDiv,
   shopeeProductResults,
-  shopeeAutoExtract,
-  shopeeShowImages,
+  autoExtract,
+  showImages,
+  shopeeScrapeBtn,
 }) {
   let lastShopeeProducts = [];
-  const shopeeScrapeBtn = document.getElementById("shopeeScrapeBtn");
   window.shopeeProducts = [];
 
   function showProducts(products) {
-    window.displayProducts(products, shopeeProductResults, shopeeShowImages);
+    window.displayProducts(products, shopeeProductResults, showImages);
   }
 
   shopeeScrapeBtn.addEventListener("click", function () {
@@ -74,13 +74,19 @@ export function initShopeeHandlers({
   }
 
   // 图片显示切换
-  if (shopeeShowImages) {
-    shopeeShowImages.addEventListener("change", function () {
+  if (showImages) {
+    showImages.addEventListener("change", function () {
       if (window.shopeeProducts && window.shopeeProducts.length > 0) {
         showProducts(window.shopeeProducts);
       }
+      chrome.storage.sync.set({ showImages: this.checked });
     });
   }
 
-  // 自动检测功能（已在popup.js中实现自动点击按钮，这里无需重复）
+  // 保存设置
+  if (autoExtract) {
+    autoExtract.addEventListener("change", function () {
+      chrome.storage.sync.set({ autoExtract: this.checked });
+    });
+  }
 }

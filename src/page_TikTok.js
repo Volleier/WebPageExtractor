@@ -9,20 +9,7 @@ export function initTiktokHandlers({
   showImages,
   TikTokScrapeBtn,
 }) {
-  // 加载保存的设置
-  chrome.storage.sync.get(["autoExtract", "showImages"], function (data) {
-    autoExtract.checked = data.autoExtract || false;
-    showImages.checked = data.showImages !== undefined ? data.showImages : true;
-  });
-
-  // 保存设置
-  autoExtract.addEventListener("change", function () {
-    chrome.storage.sync.set({ autoExtract: this.checked });
-  });
-  showImages.addEventListener("change", function () {
-    chrome.storage.sync.set({ showImages: this.checked });
-  });
-
+  // 这里不再需要读取 storage，popup.js 已经初始化
   let lastTikTokProducts = [];
   window.tiktokProducts = [];
 
@@ -88,13 +75,14 @@ export function initTiktokHandlers({
       if (window.tiktokProducts && window.tiktokProducts.length > 0) {
         showProducts(window.tiktokProducts);
       }
+      chrome.storage.sync.set({ showImages: this.checked });
     });
   }
-}
 
-// 工具函数：转义HTML
-function escapeHtml(str) {
-  return (str || "").replace(/[<>&"]/g, function (c) {
-    return { "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c];
-  });
+  // 保存设置
+  if (autoExtract) {
+    autoExtract.addEventListener("change", function () {
+      chrome.storage.sync.set({ autoExtract: this.checked });
+    });
+  }
 }
