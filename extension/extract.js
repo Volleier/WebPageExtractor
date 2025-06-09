@@ -253,3 +253,86 @@ function extractShopeeProducts() {
   });
   return products;
 }
+
+function injectExtractButtons() {
+  const items = document.querySelectorAll('div.flex.flex-col.bg-white.cursor-pointer');
+  items.forEach((item, idx) => {
+    if (item.querySelector('.shopee-extract-btn')) return; // 防止重复添加
+    const btn = document.createElement('button');
+    btn.textContent = '提取';
+    btn.className = 'shopee-extract-btn';
+    btn.style.position = 'absolute';
+    btn.style.top = '6px';
+    btn.style.left = '6px';
+    btn.style.zIndex = 1000;
+    btn.style.background = '#2196f3';
+    btn.style.color = '#fff';
+    btn.style.border = 'none';
+    btn.style.borderRadius = '4px';
+    btn.style.padding = '2px 8px';
+    btn.style.cursor = 'pointer';
+    btn.addEventListener('mousedown', function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    btn.onclick = function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      // 只提取当前卡片的信息
+      const nameDiv = item.querySelector(".line-clamp-2, .break-words");
+      const name = nameDiv ? nameDiv.textContent.trim() : "";
+      const priceSpan = item.querySelector(
+        ".text-shopee-primary .text-base, .text-shopee-primary .font-medium.text-base\\/5"
+      );
+      let price = priceSpan ? priceSpan.textContent.trim() : "";
+      const peso = item.querySelector(
+        ".text-shopee-primary .text-xs, .text-shopee-primary .text-xs\\/sp14"
+      );
+      if (peso) price = peso.textContent.trim() + price;
+      const img = item.querySelector('img[loading="lazy"], img.object-contain');
+      const image = img ? img.src : "";
+      const soldDiv = item.querySelector(".text-shopee-black87");
+      const sold = soldDiv ? soldDiv.textContent.trim() : "";
+
+      const product = { name, price, image, sold };
+      console.log('提取商品', product);
+
+      // 1. 先读取已有的商品数组
+      chrome.storage.local.get({ shopeeProducts: [] }, function(data) {
+        const products = Array.isArray(data.shopeeProducts) ? data.shopeeProducts : [];
+        // 检查是否已存在相同商品（可选，按名称和价格去重）
+        const exists = products.some(p => p.name === product.name && p.price === product.price);
+        if (!exists) products.push(product);
+
+        // 2. 保存回 storage
+        chrome.storage.local.set({ shopeeProducts: products });
+
+        // 3. 发送消息（弹窗打开时可实时刷新）
+        chrome.runtime.sendMessage(
+          {
+            action: "shopeeProductExtracted",
+            product,
+          },
+          function(response) {
+            btn.textContent = '提取完成';
+            btn.disabled = true;
+            btn.style.background = '#4caf50';
+          }
+        );
+      });
+    };
+    item.style.position = 'relative';
+    item.appendChild(btn);
+  });
+}
+
+// 只要是shopee页面就自动注入按钮
+if (/shopee\./.test(location.hostname)) {
+  // 页面渲染有延迟，定时多次尝试注入
+  let tryCount = 0;
+  const timer = setInterval(() => {
+    injectExtractButtons();
+    tryCount++;
+    if (tryCount > 10) clearInterval(timer);
+  }, 1000);
+}

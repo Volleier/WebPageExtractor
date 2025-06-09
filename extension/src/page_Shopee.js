@@ -16,6 +16,29 @@ export function initShopeeHandlers({
     window.displayProducts(products, shopeeProductResults, showImages);
   }
 
+  // 打开弹窗时自动读取所有已提取商品
+  chrome.storage.local.get({ shopeeProducts: [] }, function(data) {
+    if (data.shopeeProducts && data.shopeeProducts.length > 0) {
+      lastShopeeProducts = data.shopeeProducts;
+      window.shopeeProducts = data.shopeeProducts;
+      showProducts(data.shopeeProducts);
+      statusDiv.innerHTML = `<p class="success">已提取 ${data.shopeeProducts.length} 个商品</p>`;
+    }
+  });
+
+  // 保持原有监听逻辑
+  chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.action === "shopeeProductExtracted" && request.product) {
+      // 重新读取所有商品并刷新
+      chrome.storage.local.get({ shopeeProducts: [] }, function(data) {
+        lastShopeeProducts = data.shopeeProducts;
+        window.shopeeProducts = data.shopeeProducts;
+        showProducts(data.shopeeProducts);
+        statusDiv.innerHTML = `<p class="success">已提取 ${data.shopeeProducts.length} 个商品</p>`;
+      });
+    }
+  });
+
   shopeeScrapeBtn.addEventListener("click", function () {
     statusDiv.innerHTML =
       '<p><i class="fas fa-spinner fa-spin"></i> 正在提取Shopee产品信息...</p>';
@@ -88,5 +111,22 @@ export function initShopeeHandlers({
     autoExtract.addEventListener("change", function () {
       chrome.storage.sync.set({ autoExtract: this.checked });
     });
+  }
+
+  // 提取单个商品信息并发送消息
+  function extractSingleProduct(product, btn) {
+    chrome.runtime.sendMessage(
+      {
+        action: "shopeeProductExtracted",
+        product,
+      },
+      function (response) {
+        btn.textContent = "提取完成";
+        btn.disabled = true;
+        btn.style.background = "#4caf50";
+        // 存储到本地，供弹窗读取
+        chrome.storage.local.set({ lastShopeeProduct: product });
+      }
+    );
   }
 }
