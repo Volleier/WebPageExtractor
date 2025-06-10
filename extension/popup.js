@@ -209,3 +209,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+document.getElementById('sendHelloBtn').addEventListener('click', async () => {
+  try {
+    await fetch('http://localhost:8080/system/product/receiveString', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: 'hello world'
+    });
+    alert('已发送 "hello world" 到 /system/product/receiveString');
+  } catch (e) {
+    alert('发送失败: ' + e.message);
+  }
+});
