@@ -1,6 +1,6 @@
-package com.ruoyi.system.mapper;
+package com.webscout.system.mapper;
 
-import com.ruoyi.system.domain.SysProduct;
+import com.webscout.system.domain.SysProduct;
 import java.util.List;
 
 public interface SysProductMapper {

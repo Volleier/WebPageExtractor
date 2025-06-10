@@ -1,4 +1,4 @@
-package com.ruoyi.system.domain;
+package com.webscout.system.domain;
 
 /**
  * 商品表 sys_product

@@ -1,10 +1,10 @@
-package com.ruoyi.web.controller.system;
+package com.webscout.web.controller.system;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.ruoyi.system.domain.SysProduct;
-import com.ruoyi.system.service.ISysProductService;
-import com.ruoyi.common.core.domain.AjaxResult;
+import com.webscout.system.domain.SysProduct;
+import com.webscout.system.service.ISysProductService;
+import com.webscout.common.core.domain.AjaxResult;
 import java.util.List;
 
 @RestController

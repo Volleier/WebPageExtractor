@@ -1,10 +1,10 @@
-package com.ruoyi.system.service.impl;
+package com.webscout.system.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.domain.SysProduct;
-import com.ruoyi.system.mapper.SysProductMapper;
-import com.ruoyi.system.service.ISysProductService;
+import com.webscout.system.domain.SysProduct;
+import com.webscout.system.mapper.SysProductMapper;
+import com.webscout.system.service.ISysProductService;
 
 import java.util.List;
 

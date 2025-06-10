@@ -1,6 +1,6 @@
-package com.ruoyi.system.service;
+package com.webscout.system.service;
 
-import com.ruoyi.system.domain.SysProduct;
+import com.webscout.system.domain.SysProduct;
 import java.util.List;
 
 public interface ISysProductService {
