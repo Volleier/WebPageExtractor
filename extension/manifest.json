@@ -26,7 +26,9 @@
     "*://*.shopee.co.id/*",
     "*://*.shopee.co.th/*",
     "*://*.shopee.my/*",
-    "*://*.shopee.tw/*"
+    "*://*.shopee.tw/*",
+    "http://localhost/*",
+    "http://localhost:80/*"
   ],
   "background": {
     "service_worker": "background.js",
@@ -43,7 +45,9 @@
         "*://*.shopee.co.id/*",
         "*://*.shopee.co.th/*",
         "*://*.shopee.my/*",
-        "*://*.shopee.tw/*"
+        "*://*.shopee.tw/*",
+        "http://localhost/*",
+        "http://localhost:80/*"
       ],
       "js": ["extract.js"],
       "run_at": "document_idle"

@@ -336,3 +336,13 @@ if (/shopee\./.test(location.hostname)) {
     if (tryCount > 10) clearInterval(timer);
   }, 1000);
 }
+
+window.addEventListener("message", function(event) {
+  if (event.source !== window) return;
+  if (event.data && event.data.type === "SYNC_TOKEN") {
+    console.log("内容脚本收到token：", event.data.token); // 调试日志
+    chrome.storage.local.set({ token: event.data.token }, function() {
+      console.log("内容脚本直接写入token", event.data.token, chrome.runtime.lastError);
+    });
+  }
+});

@@ -208,6 +208,26 @@ document.addEventListener("DOMContentLoaded", function () {
       statusDiv.innerHTML = `<p>请打开商品详情页使用该插件<br>当前URL: ${url}</p>`;
     }
   });
+
+  // 认证状态栏显示
+  function updateAuthStatus() {
+    chrome.storage.local.get("token", ({ token }) => {
+      const authStatus = document.getElementById("authStatus");
+      if (authStatus) {
+        if (token) {
+          authStatus.textContent = "系统认证成功";
+          authStatus.style.background = "#4caf50";
+        } else {
+          authStatus.textContent = "系统未认证";
+          authStatus.style.background = "#888";
+        }
+      }
+    });
+  }
+
+  updateAuthStatus();
+  // 定时刷新认证状态
+  setInterval(updateAuthStatus, 3000);
 });
 
 document.getElementById('sendHelloBtn').addEventListener('click', async () => {
@@ -221,4 +241,8 @@ document.getElementById('sendHelloBtn').addEventListener('click', async () => {
   } catch (e) {
     alert('发送失败: ' + e.message);
   }
+});
+
+chrome.storage.local.get("token", ({ token }) => {
+  console.log("当前 token:", token);
 });
