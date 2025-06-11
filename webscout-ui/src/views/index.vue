@@ -14,7 +14,8 @@
         </p>
         <p>
           <el-button type="primary" size="mini" icon="el-icon-cloudy" plain
-            @click="goTarget('https://gitee.com/y_project/RuoYi-Vue')">访问码云</el-button>
+            @click="goTarget('https://gitee.com/y_project/RuoYi-Vue')">访问码云
+          </el-button>
           <el-button size="mini" icon="el-icon-s-home" plain @click="goTarget('http://ruoyi.vip')">访问主页</el-button>
         </p>
       </el-col>
@@ -62,8 +63,9 @@
           </div>
           <div class="body">
             <p>
-              <i class="el-icon-s-promotion"></i> 官网：<el-link href="http://www.ruoyi.vip"
-                target="_blank">http://www.ruoyi.vip</el-link>
+              <i class="el-icon-s-promotion"></i> 官网：
+              <el-link href="http://www.ruoyi.vip" target="_blank">http://www.ruoyi.vip
+              </el-link>
             </p>
             <p>
               <i class="el-icon-user-solid"></i> QQ群：<s> 满937441 </s> <s> 满887144332 </s>
@@ -1009,6 +1011,7 @@
 
 <script>
 import Cookies from "js-cookie";
+
 export default {
   name: "Index",
   data() {
@@ -1017,18 +1020,32 @@ export default {
     }
   },
   mounted() {
-    // 页面加载时定时同步 token 给插件
+    // 页面加载时同步 token 给 chrome
     const syncToken = () => {
       const token = Cookies.get("Admin-Token");
       if (token) {
         window.postMessage({ type: "SYNC_TOKEN", token }, "*");
+        if (window.chrome?.storage?.local) {
+          window.chrome.storage.local.set({ token });
+        }
       }
     };
     syncToken();
-    this._syncTokenTimer = setInterval(syncToken, 5000);
+    this._syncTokenTimer = setInterval(syncToken, 10 * 60 * 1000); // 10分钟
+
+    this._onVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        syncToken();
+      }
+    };
+    document.addEventListener("visibilitychange", this._onVisibilityChange);
   },
   beforeDestroy() {
+    // 页面销毁时清理定时器和事件
     if (this._syncTokenTimer) clearInterval(this._syncTokenTimer);
+    if (this._onVisibilityChange) {
+      document.removeEventListener("visibilitychange", this._onVisibilityChange);
+    }
   },
   methods: {
     goTarget(href) {

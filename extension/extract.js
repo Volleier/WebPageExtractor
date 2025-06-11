@@ -340,9 +340,11 @@ if (/shopee\./.test(location.hostname)) {
 window.addEventListener("message", function(event) {
   if (event.source !== window) return;
   if (event.data && event.data.type === "SYNC_TOKEN") {
-    console.log("内容脚本收到token：", event.data.token); // 调试日志
-    chrome.storage.local.set({ token: event.data.token }, function() {
-      console.log("内容脚本直接写入token", event.data.token, chrome.runtime.lastError);
-    });
+    const token = event.data.token;
+    chrome.storage.local.set({ token });
   }
+});
+
+chrome.storage.local.get("token", function(data) {
+  console.log("扩展存储中的 token:", data.token);
 });

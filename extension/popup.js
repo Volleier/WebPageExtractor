@@ -231,18 +231,23 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.getElementById('sendHelloBtn').addEventListener('click', async () => {
-  try {
-    await fetch('http://localhost:8080/system/product/receiveString', {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: 'hello world'
-    });
-    alert('已发送 "hello world" 到 /system/product/receiveString');
-  } catch (e) {
-    alert('发送失败: ' + e.message);
-  }
-});
-
-chrome.storage.local.get("token", ({ token }) => {
-  console.log("当前 token:", token);
+  chrome.storage.local.get('token', async ({ token }) => {
+    if (!token) {
+      alert('未获取到Token，请先认证');
+      return;
+    }
+    try {
+      await fetch('http://localhost:8080/system/product/receiveString', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: '"hello world"'
+      });
+      alert('已发送 "hello world" 到 /system/product/receiveString, token: '+token);
+    } catch (e) {
+      alert('发送失败: ' + e.message);
+    }
+  });
 });

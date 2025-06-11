@@ -89,6 +89,27 @@ export default {
     this.getCode()
     this.getCookie()
   },
+  mounted() {
+    // 页面加载时同步 token 给 chrome
+    const syncToken = () => {
+      const token = Cookies.get("Admin-Token");
+      if (token) {
+        window.postMessage({ type: "SYNC_TOKEN", token }, "*");
+        if (window.chrome?.storage?.local) {
+          window.chrome.storage.local.set({ token });
+        }
+      }
+    };
+    syncToken();
+    this._syncTokenTimer = setInterval(syncToken, 10 * 60 * 1000); // 10分钟
+
+    this._onVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        syncToken();
+      }
+    };
+    document.addEventListener("visibilitychange", this._onVisibilityChange);
+  },
   methods: {
     getCode() {
       getCodeImg().then(res => {
@@ -123,20 +144,11 @@ export default {
             Cookies.remove('rememberMe')
           }
           this.$store.dispatch("Login", this.loginForm).then(() => {
-            // 登录成功后定时同步token
-            const syncToken = () => {
-              const token = Cookies.get("Admin-Token");
-              if (token) {
-                window.postMessage({ type: "SYNC_TOKEN", token }, "*");
-              }
-            };
-            // 先同步一次
-            syncToken();
-            // 清除旧定时器
-            if (this.syncTokenTimer) clearInterval(this.syncTokenTimer);
-            // 每5秒同步一次
-            this.syncTokenTimer = setInterval(syncToken, 5000);
-
+            // 登录成功后同步 token
+            const token = Cookies.get("Admin-Token");
+            if (token) {
+              window.postMessage({ type: "SYNC_TOKEN", token }, "*");
+            }
             this.$router.push({ path: this.redirect || "/" }).catch(() => { })
           }).catch(() => {
             this.loading = false
@@ -149,8 +161,11 @@ export default {
     }
   },
   beforeDestroy() {
-    // 页面销毁时清理定时器
-    if (this.syncTokenTimer) clearInterval(this.syncTokenTimer);
+    // 页面销毁时清理定时器和事件
+    if (this._syncTokenTimer) clearInterval(this._syncTokenTimer);
+    if (this._onVisibilityChange) {
+      document.removeEventListener("visibilitychange", this._onVisibilityChange);
+    }
   }
 }
 </script>

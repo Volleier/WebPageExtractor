@@ -12,7 +12,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/system/product")
 public class SysProductController {
-
     @Autowired
     private ISysProductService sysProductService;
 

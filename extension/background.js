@@ -116,11 +116,4 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     }
     return;
   }
-
-  // 保存token
-  if (msg.action === "saveToken") {
-    console.log("后台收到token：", msg.token);
-    chrome.storage.local.set({ token: msg.token });
-    return;
-  }
 });
