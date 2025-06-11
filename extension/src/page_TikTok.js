@@ -44,9 +44,13 @@ export function initTiktokHandlers({
             }
             if (response && response.success) {
               statusDiv.innerHTML = `<p class="success">成功提取了 ${response.products.length} 个产品</p>`;
-              lastTikTokProducts = response.products;
-              window.tiktokProducts = response.products;
-              showProducts(response.products);
+              const products = response.products.map(p => {
+                const { image, ...rest } = p;
+                return rest;
+              });
+              lastTikTokProducts = products;
+              window.tiktokProducts = products;
+              showProducts(products);
             } else {
               statusDiv.innerHTML = `
                 <p class="error">未能提取产品信息。请确保您在TikTok产品页面上</p>

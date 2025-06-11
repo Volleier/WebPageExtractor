@@ -345,6 +345,10 @@ window.addEventListener("message", function(event) {
   }
 });
 
-chrome.storage.local.get("token", function(data) {
-  console.log("扩展存储中的 token:", data.token);
-});
+/*
+if (window.chrome && chrome.storage && chrome.storage.local) {
+  chrome.storage.local.get("token", function(data) {
+    console.log("扩展存储中的 token:", data.token);
+  });
+}
+*/

@@ -228,26 +228,78 @@ document.addEventListener("DOMContentLoaded", function () {
   updateAuthStatus();
   // 定时刷新认证状态
   setInterval(updateAuthStatus, 3000);
+
+  const sendTiktokCsvBtn = document.getElementById('sendTiktokCsvBtn');
+  if (sendTiktokCsvBtn) {
+    sendTiktokCsvBtn.addEventListener('click', async () => {
+      chrome.storage.local.get(['token'], async ({ token }) => {
+        if (!token) {
+          alert('未获取到Token，请先认证');
+          return;
+        }
+        const tiktokProducts = (window.tiktokProducts || []).map(({ image, ...rest }) => rest);
+        if (!tiktokProducts || tiktokProducts.length === 0) {
+          alert('暂无可发送的TikTok产品数据，请先提取产品信息');
+          return;
+        }
+        // 转为CSV
+        const csv = (() => {
+          const allKeys = new Set();
+          tiktokProducts.forEach((p) => Object.keys(p).forEach((k) => allKeys.add(k)));
+          const headers = Array.from(allKeys);
+          const rows = tiktokProducts.map((p) =>
+            headers.map((h) => `"${(p[h] || "").toString().replace(/"/g, '""')}"`)
+          );
+          return [headers.join(","), ...rows.map((r) => r.join(","))].join("\r\n");
+        })();
+
+        try {
+          await fetch('http://localhost:8080/system/product/receiveCsv', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'text/csv',
+              'Authorization': 'Bearer ' + token
+            },
+            body: csv
+          });
+          alert('已发送TikTok CSV到 /system/product/receiveCsv，token: ' + token);
+        } catch (e) {
+          alert('发送失败: ' + e.message);
+        }
+      });
+    });
+  }
 });
 
-document.getElementById('sendHelloBtn').addEventListener('click', async () => {
+document.getElementById('sendTestBtn').addEventListener('click', async () => {
   chrome.storage.local.get('token', async ({ token }) => {
     if (!token) {
       alert('未获取到Token，请先认证');
       return;
     }
+    const testStr = "test-connection";
     try {
-      await fetch('http://localhost:8080/system/product/receiveString', {
+      const resp = await fetch('http://localhost:8080/system/product/receiveString', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + token
         },
-        body: '"hello world"'
+        body: JSON.stringify(testStr)
       });
-      alert('已发送 "hello world" 到 /system/product/receiveString, token: '+token);
+      const result = await resp.json ? await resp.json() : await resp.text();
+      // 判断返回内容是否与发送内容一致
+      if (
+        result === testStr ||
+        (typeof result === 'object' && (result.data === testStr || result.msg === testStr || result.msg === `"${testStr}"`))
+      ) {
+        alert('系统连通正常');
+      } else {
+        alert('系统返回内容：' + JSON.stringify(result));
+      }
     } catch (e) {
       alert('发送失败: ' + e.message);
     }
   });
 });
+const tiktokProducts = window.tiktokProducts || [];

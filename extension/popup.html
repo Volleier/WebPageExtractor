@@ -37,6 +37,9 @@
         <button id="TikTokExportBtn" class="btn secondary">
           <i class="fas fa-file-export"></i> 导出为CSV
         </button>
+        <button id="sendTiktokCsvBtn" class="btn secondary" style="margin: 16px auto; display: block;">
+          向后端发送TikTok CSV数据
+        </button>
         <div class="results">
           <h2><i class="fas fa-box-open"></i> 提取结果</h2>
           <div id="productResults"></div>
@@ -56,6 +59,7 @@
         <button id="shopeeExportBtn" class="btn secondary">
           <i class="fas fa-file-export"></i> 导出为CSV
         </button>
+
         <div class="results">
           <h2><i class="fas fa-box-open"></i> 提取结果</h2>
           <div id="shopeeProductResults"></div>
@@ -63,8 +67,10 @@
       </div>
 
       <!-- 其他平台内容区域可后续扩展 -->
-      <button id="sendHelloBtn" class="btn secondary" style="margin: 16px auto; display: block;">
-        向8080端口发送"hello world"
+
+      <!-- 像后端发送测试数据，后端返回相同数据 -->
+      <button id="sendTestBtn" class="btn secondary" style="margin: 16px auto; display: block;">
+        测试系统通信
       </button>
     </div>
     <script type="module" src="popup.js"></script>
