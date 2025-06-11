@@ -64,8 +64,16 @@ function displayProducts(products, resultsDiv, showImagesCtrl) {
     productCard.className = "product-card";
 
     let imgHTML = "";
-    if (showImagesCtrl && showImagesCtrl.checked && product.image) {
-      imgHTML = `<img src="${product.image}" alt="${product.name || "产品图片"}">`;
+    let imgUrl = "";
+    if (showImagesCtrl && showImagesCtrl.checked) {
+      if (Array.isArray(product.images) && product.images.length > 0) {
+        imgUrl = product.images[0];
+      } else if (product.image) {
+        imgUrl = product.image;
+      }
+      if (imgUrl) {
+        imgHTML = `<img src="${imgUrl}" alt="${product.name || "产品图片"}">`;
+      }
     }
 
     const name = product.name || "未知产品";
@@ -229,40 +237,34 @@ document.addEventListener("DOMContentLoaded", function () {
   // 定时刷新认证状态
   setInterval(updateAuthStatus, 3000);
 
-  const sendTiktokCsvBtn = document.getElementById('sendTiktokCsvBtn');
-  if (sendTiktokCsvBtn) {
-    sendTiktokCsvBtn.addEventListener('click', async () => {
+  const sendTiktokJsonBtn = document.getElementById('sendTiktokJsonBtn');
+  if (sendTiktokJsonBtn) {
+    sendTiktokJsonBtn.addEventListener('click', async () => {
       chrome.storage.local.get(['token'], async ({ token }) => {
         if (!token) {
           alert('未获取到Token，请先认证');
           return;
         }
-        const tiktokProducts = (window.tiktokProducts || []).map(({ image, ...rest }) => rest);
+        const tiktokProducts = (window.tiktokProducts || []).map(p => ({
+          productName: p.name || "",
+          productImage: Array.isArray(p.images) ? p.images : [],
+          productPrice: (typeof p.price === "number" && !isNaN(p.price)) ? p.price : null,
+          seller: p.seller || ""
+        }));
         if (!tiktokProducts || tiktokProducts.length === 0) {
           alert('暂无可发送的TikTok产品数据，请先提取产品信息');
           return;
         }
-        // 转为CSV
-        const csv = (() => {
-          const allKeys = new Set();
-          tiktokProducts.forEach((p) => Object.keys(p).forEach((k) => allKeys.add(k)));
-          const headers = Array.from(allKeys);
-          const rows = tiktokProducts.map((p) =>
-            headers.map((h) => `"${(p[h] || "").toString().replace(/"/g, '""')}"`)
-          );
-          return [headers.join(","), ...rows.map((r) => r.join(","))].join("\r\n");
-        })();
-
         try {
-          await fetch('http://localhost:8080/system/product/receiveCsv', {
+          await fetch('http://localhost:8080/system/product/receiveJson', {
             method: 'POST',
             headers: {
-              'Content-Type': 'text/csv',
+              'Content-Type': 'application/json',
               'Authorization': 'Bearer ' + token
             },
-            body: csv
+            body: JSON.stringify(tiktokProducts)
           });
-          alert('已发送TikTok CSV到 /system/product/receiveCsv，token: ' + token);
+          alert('已发送TikTok产品JSON到 /system/product/receiveJson，token: ' + token);
         } catch (e) {
           alert('发送失败: ' + e.message);
         }

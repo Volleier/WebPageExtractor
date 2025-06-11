@@ -23,6 +23,15 @@
             <artifactId>webscout-common</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus</artifactId>
+            <version>3.5.3</version>
+        </dependency>
     </dependencies>
 
 </project>

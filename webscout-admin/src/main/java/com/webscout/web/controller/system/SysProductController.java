@@ -39,12 +39,15 @@ public class SysProductController {
     /**
      * 接收前端发送的CSV数据
      *
-     * @param csvData CSV格式的字符串
+     * @param products Json格式
      * @return 处理结果
      */
-    @PostMapping("/receiveCsv")
-    public AjaxResult receiveCsv(@RequestBody(required = false) String csvData) {
-        System.out.println("收到前端CSV数据: " + csvData);
+    @PostMapping("/receiveJson")
+    public AjaxResult receiveJson(@RequestBody(required = false) List<SysProduct> products) {
+        if (products == null || products.isEmpty()) {
+            return AjaxResult.error("JSON数据为空");
+        }
+        System.out.println("收到前端JSON数据: " + products);
         /* 仅为测试
         // 保存CSV数据到本地文件，使用UTF-8编码
         if (csvData != null && !csvData.isEmpty()) {
@@ -60,6 +63,6 @@ public class SysProductController {
             }
         }
          */
-        return AjaxResult.error("CSV数据为空");
+        return AjaxResult.success(products);
     }
 }
