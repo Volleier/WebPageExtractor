@@ -134,11 +134,13 @@ function extractTikTokSingleProductInfo() {
       ".product-price",
       '[data-e2e="product-price"]',
     ];
-    let price = "价格不可用";
+    let price = null;
     for (let selector of priceSelectors) {
       const el = document.querySelector(selector);
       if (el && el.textContent.trim()) {
-        price = el.textContent.trim();
+        // 提取纯数字部分
+        const priceText = el.textContent.trim().replace(/[^\d.]/g, "");
+        price = priceText ? parseFloat(priceText) : null;
         break;
       }
     }

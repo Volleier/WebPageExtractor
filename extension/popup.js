@@ -76,9 +76,9 @@ function displayProducts(products, resultsDiv, showImagesCtrl) {
       }
     }
 
-    const name = product.name || "未知产品";
-    const price = product.price || "价格不可用";
-    const seller = product.seller || "未知卖家";
+    const name = product.name ?? product.productName ?? "未知产品";
+    const price = product.price ?? product.productPrice ?? "价格不可用";
+    const seller = product.seller ?? "未知卖家";
 
     productCard.innerHTML = `
       <h3>${name}</h3>
@@ -264,7 +264,7 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             body: JSON.stringify(tiktokProducts)
           });
-          alert('已发送TikTok产品JSON到 /system/product/receiveJson，token: ' + token);
+          alert('已发送TikTok产品到后端系统');
         } catch (e) {
           alert('发送失败: ' + e.message);
         }

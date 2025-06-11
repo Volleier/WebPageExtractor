@@ -47,7 +47,7 @@ public class SysProductController {
         if (products == null || products.isEmpty()) {
             return AjaxResult.error("JSON数据为空");
         }
-        System.out.println("收到前端JSON数据: " + products);
+        System.out.println("收到前端JSON数据");
         /* 仅为测试
         // 保存CSV数据到本地文件，使用UTF-8编码
         if (csvData != null && !csvData.isEmpty()) {
@@ -63,6 +63,13 @@ public class SysProductController {
             }
         }
          */
-        return AjaxResult.success(products);
+        int successCount = 0;
+        for (SysProduct product : products) {
+            int rows = sysProductService.insertSysProduct(product);
+            if (rows > 0) {
+                successCount++;
+            }
+        }
+        return AjaxResult.success("成功导入 " + successCount + " 条商品数据");
     }
 }
