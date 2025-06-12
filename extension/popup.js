@@ -264,7 +264,6 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             body: JSON.stringify(tiktokProducts)
           });
-          alert('已发送TikTok产品到后端系统');
         } catch (e) {
           alert('发送失败: ' + e.message);
         }

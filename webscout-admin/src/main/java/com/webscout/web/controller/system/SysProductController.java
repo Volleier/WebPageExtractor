@@ -15,20 +15,37 @@ public class SysProductController {
     @Autowired
     private ISysProductService sysProductService;
 
-    // 新增商品
+    /**
+     * 接收前端发送的商品数据（未使用）
+     * @param product 商品数据
+     * @return 处理结果
+     * 返回格式为 AjaxResult.success() 或 AjaxResult.error("保存失败")
+     */
     @PostMapping
     public AjaxResult add(@RequestBody SysProduct product) {
         int rows = sysProductService.insertSysProduct(product);
         return rows > 0 ? AjaxResult.success() : AjaxResult.error("保存失败");
     }
 
-    // 查询商品列表
+    /**
+     * 向前端发送商品数据
+     * @param product 商品查询条件
+     * @return 商品列表
+     * 返回格式为 AjaxResult.success(list)，其中 list 是商品列表数据
+     * @see com.webscout.system.domain.SysProduct
+     */
     @GetMapping("/list")
     public AjaxResult list(SysProduct product) {
         List<SysProduct> list = sysProductService.selectSysProductList(product);
         return AjaxResult.success(list);
     }
 
+    /**
+     * 接收前端发送的字符串数据
+     *
+     * @param data 前端发送的字符串
+     * @return 处理结果
+     */
     @PostMapping("/receiveString")
     public AjaxResult receiveString(@RequestBody(required = false) String data) {
         System.out.println("前后端连通成功 ");
@@ -48,7 +65,7 @@ public class SysProductController {
             return AjaxResult.error("JSON数据为空");
         }
         System.out.println("收到前端JSON数据");
-        /* 仅为测试
+        /* 仅为测试前端数据是否正常
         // 保存CSV数据到本地文件，使用UTF-8编码
         if (csvData != null && !csvData.isEmpty()) {
             try {

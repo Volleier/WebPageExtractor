@@ -161,10 +161,9 @@ function extractTikTokSingleProductInfo() {
 
     // 卖家信息选择器
     const sellerSelectors = [
-      ".seller-c27aRQ",
-      ".seller-name",
+      ".productSeller-name",
       ".shop-name",
-      '[data-e2e="seller-name"]',
+      '[data-e2e="productSeller-name"]',
     ];
     let seller = "未知卖家";
     for (let selector of sellerSelectors) {

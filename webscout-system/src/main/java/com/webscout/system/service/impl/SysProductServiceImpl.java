@@ -21,6 +21,7 @@ public class SysProductServiceImpl implements ISysProductService {
 
     @Override
     public List<SysProduct> selectSysProductList(SysProduct product) {
-        return sysProductMapper.selectSysProductList(product);
+        List<SysProduct> list = sysProductMapper.selectSysProductList(product);
+        return list;
     }
 }

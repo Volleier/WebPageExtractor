@@ -8,20 +8,20 @@
         INSERT INTO sys_product (product_name, product_image, product_price, product_seller)
         VALUES (#{productName},
                 #{productImage, typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler},
-                #{productPrice}, #{seller})
+                #{productPrice}, #{productSeller})
     </insert>
 
-    <select id="selectSysProductList" parameterType="SysProduct" resultType="SysProduct">
-        SELECT id, product_name, product_image, product_price, seller
+    <resultMap id="SysProductMap" type="SysProduct">
+        <id     column="id"            property="id"/>
+        <result column="product_name"  property="productName"/>
+        <result column="product_image" property="productImage" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="product_price" property="productPrice"/>
+        <result column="product_seller" property="productSeller"/>
+    </resultMap>
+
+    <select id="selectSysProductList" parameterType="SysProduct" resultMap="SysProductMap">
+        SELECT id, product_name, product_image, product_price, product_seller
         FROM sys_product
-        <where>
-            <if test="productName != null and productName != ''">
-                AND product_name LIKE CONCAT('%', #{productName}, '%')
-            </if>
-            <if test="seller != null and seller != ''">
-                AND seller = #{seller}
-            </if>
-        </where>
     </select>
 
 </mapper>

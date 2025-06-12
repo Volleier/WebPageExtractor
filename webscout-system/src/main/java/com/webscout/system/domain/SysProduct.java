@@ -2,6 +2,8 @@ package com.webscout.system.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 
 import java.util.List;
 
@@ -11,7 +13,6 @@ import java.util.List;
  * @author ruoyi
  */
 public class SysProduct {
-    // getter 和 setter
     /**
      * 商品ID
      */
@@ -31,6 +32,7 @@ public class SysProduct {
      */
     @Setter
     @Getter
+    @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> productImage;
 
     /**
@@ -45,7 +47,7 @@ public class SysProduct {
      */
     @Setter
     @Getter
-    private String seller;
+    private String productSeller;
 
     @Override
     public String toString() {
@@ -54,7 +56,7 @@ public class SysProduct {
                 ", productName='" + productName + '\'' +
                 ", productImage=" + productImage +
                 ", productPrice=" + productPrice +
-                ", seller='" + seller + '\'' +
+                ", productSeller='" + productSeller + '\'' +
                 '}';
     }
 }
