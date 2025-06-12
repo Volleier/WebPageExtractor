@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webscout.system.mapper.SysProductMapper">
+
+    <!-- 注意：要将ProductImage序列化为Json-->
+    <insert id="insertSysProduct" parameterType="SysProduct">
+        INSERT INTO sys_product (product_name, product_image, product_price, product_seller)
+        VALUES (#{productName},
+                #{productImage, typeHandler=com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler},
+                #{productPrice}, #{productSeller})
+    </insert>
+
+    <resultMap id="SysProductMap" type="SysProduct">
+        <id     column="id"            property="id"/>
+        <result column="product_name"  property="productName"/>
+        <result column="product_image" property="productImage" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
+        <result column="product_price" property="productPrice"/>
+        <result column="product_seller" property="productSeller"/>
+    </resultMap>
+
+    <select id="selectSysProductList" parameterType="SysProduct" resultMap="SysProductMap">
+        SELECT id, product_name, product_image, product_price, product_seller
+        FROM sys_product
+    </select>
+
+</mapper>
